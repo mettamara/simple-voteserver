@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.mortbay.jetty.HttpConnection;
 import org.mortbay.jetty.Request;
 import org.mortbay.jetty.handler.AbstractHandler;
 import org.slf4j.Logger;
@@ -26,8 +27,7 @@ import edu.ucsb.aelmore.util.VoteServerException;
  *         and service functionality are sepearated so the components can be
  *         decoupled.
  */
-public class VoteHandler extends AbstractHandler implements IVoteHandler,
-    IVoteService {
+public class VoteHandler extends AbstractHandler implements IVoteHandler, IVoteService {
 	private static Logger log = LoggerFactory.getLogger(VoteHandler.class);
 	protected IDAO dao;
 	protected Pattern inputPattern;
@@ -38,51 +38,61 @@ public class VoteHandler extends AbstractHandler implements IVoteHandler,
 	}
 
 	@Override
-	public void handle(String target, HttpServletRequest request,
-	    HttpServletResponse response, int arg3) throws IOException,
-	    ServletException {
+	public void handle(String target, HttpServletRequest request, HttpServletResponse response, int arg3)
+	    throws IOException, ServletException {
 
 		if (request.getMethod().equals("POST")) {
 			log.debug("Post Request");
 			if (target.equalsIgnoreCase(MEMBER_SCV)) {
-
+				//****** Add a new MEMBER ****************
+				
 				log.debug("Member");
 				if (request.getParameter(AGENT_PARM) == null) {
 					log.debug("Missing parm");
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-					    MEMBER_MISSING_PARM);
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST, MEMBER_MISSING_PARM);
 				} else {
 					// Add member
-					// TODO
-					response.getWriter().write("-");
-					response.setStatus(HttpServletResponse.SC_OK);
+					try{
+						addMember(request.getParameter(AGENT_PARM));
+						response.getWriter().write("-");
+						response.setStatus(HttpServletResponse.SC_OK);
+					} catch(VoteServerException ex){
+						response.sendError(HttpServletResponse.SC_BAD_REQUEST,ex.getMessage());
+					}
 				}
+				
+				
 			} else if (target.equalsIgnoreCase(VOTE_SCV)) {
-				// Vote
+				//	****** Add a new VOTE ****************				
 				log.debug("Vote");
-				if (request.getParameter(AGENT_PARM) == null
-				    || request.getParameter(VOTE_PARM) == null) {
+				if (request.getParameter(AGENT_PARM) == null || request.getParameter(VOTE_PARM) == null) {
 					log.debug("Missing parm");
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-					    VOTE_MISSING_PARM);
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST, VOTE_MISSING_PARM);
 				} else {
-					// TODO
-					log.debug(String.format("Vote recv : agent:%s vote:%s ",
-					    request.getParameter(AGENT_PARM), request.getParameter(VOTE_PARM)));
-					response.getWriter().write("-");
-					response.setStatus(HttpServletResponse.SC_OK);
+					try{
+						log.debug(String.format("Vote recv : agent:%s vote:%s ", request.getParameter(AGENT_PARM),
+						    request.getParameter(VOTE_PARM)));
+						vote(request.getParameter(AGENT_PARM),request.getParameter(VOTE_PARM));
+						response.getWriter().write("-");
+						response.setStatus(HttpServletResponse.SC_OK);
+					} catch(VoteServerException ex){
+						response.sendError(HttpServletResponse.SC_BAD_REQUEST,ex.getMessage());
+					}
 				}
 			} else if (target.equalsIgnoreCase(RESET_SCV)) {
 
 				log.debug("Reset");
 				// Reset
-				// TODO
-				response.getWriter().write("-");
-				response.setStatus(HttpServletResponse.SC_OK);
-			} else 	if (target.equalsIgnoreCase(VICTORY_SCV)) {
-
+				try{
+					reset();
+					response.getWriter().write("-");
+					response.setStatus(HttpServletResponse.SC_OK);
+				} catch(VoteServerException ex){
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST,ex.getMessage());
+				}
+			} else if (target.equalsIgnoreCase(VICTORY_SCV)) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST, WRONG_METHOD_TYPE);
-			}			else {
+			} else {
 				log.debug("Not found : " + target);
 				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			}
@@ -91,14 +101,21 @@ public class VoteHandler extends AbstractHandler implements IVoteHandler,
 			if (target.equalsIgnoreCase(VICTORY_SCV)) {
 				// Check Victory
 
-				// TODO
-				response.getWriter().write("-");
-				response.setStatus(HttpServletResponse.SC_OK);
-			} else if (target.equalsIgnoreCase(RESET_SCV)
-			    || target.equalsIgnoreCase(MEMBER_SCV)
+				try{
+					String victor = getVictory();
+					response.getWriter().write(victor);
+					response.setStatus(HttpServletResponse.SC_OK);
+
+				} catch(VoteServerException ex){
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST,ex.getMessage());
+				}
+			} else if (target.equalsIgnoreCase(RESET_SCV) || target.equalsIgnoreCase(MEMBER_SCV)
 			    || target.equalsIgnoreCase(VOTE_SCV)) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST, WRONG_METHOD_TYPE);
-			} else {
+			} else if(target.equalsIgnoreCase(FAVICON)) {
+				
+			}
+					else {
 				log.debug("Not found : " + target);
 				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			}
@@ -107,8 +124,13 @@ public class VoteHandler extends AbstractHandler implements IVoteHandler,
 			log.debug("Bad request : " + request.getMethod());
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
-		// response.getWriter().write("-");
-		// ((Request)request).setHandled(true);
+
+		//Required for Jetty. Reflection to not setHandled for mock objects/testing
+		if(request instanceof Request){
+			Request base_request =(Request)request;
+			base_request.setHandled(true);
+		}
+		
 	}
 
 	protected boolean testInput(String s) {

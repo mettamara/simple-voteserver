@@ -15,12 +15,13 @@ public interface IVoteHandler {
 
 	//URI Request parameters
 	public static final String GOOD_RESPONSE = "-";
-	public static final String MEMBER_SCV ="member";
-	public static final String VOTE_SCV ="vote";
-	public static final String VICTORY_SCV ="victory";
-	public static final String RESET_SCV ="rst";
+	public static final String MEMBER_SCV ="/member";
+	public static final String VOTE_SCV ="/vote";
+	public static final String VICTORY_SCV ="/victory";
+	public static final String RESET_SCV ="/rst";
 	public static final String AGENT_PARM = "agent";
 	public static final String VOTE_PARM ="vote";
+	public static final String FAVICON ="/favicon.ico";
 	
 
 	public static final String VOTE_MISSING_PARM ="vote request requires a valid "+AGENT_PARM + " and " + VOTE_PARM + " parameters";

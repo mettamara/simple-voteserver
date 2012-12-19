@@ -8,6 +8,9 @@
   <properties>
     <log4j.version>1.2.16</log4j.version>
     <junit.version>4.7</junit.version>
+    <maven.compiler.version>2.3.2</maven.compiler.version>
+    
+    <maven.assembly.version>2.3</maven.assembly.version>
     <slf4j.version>1.6.4</slf4j.version>
     <maven.compiler.version>2.3.2</maven.compiler.version>
     <maven.surefire.version>2.12</maven.surefire.version>
@@ -15,12 +18,91 @@
     <perf4j.version>0.9.16</perf4j.version>
     <jetty.version>6.1.26</jetty.version>    
     <cli.version>1.2</cli.version> 
-    <gmail.version>0.1</gmail.version>
     <commons.version>3.1</commons.version>
     <springtest.version>2.5</springtest.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+  <build>
+    <plugins>
+            
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.compiler.version}</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <!--   
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${maven.assembly.version}</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>edu.ucsb.aelmore.server.VoteServerJetty</mainClass>\
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>  
+      </plugin>
+   
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-shade-plugin</artifactId>
+			    <version>1.6</version>
+			    <configuration>
+			        <createDependencyReducedPom>true</createDependencyReducedPom>
+			        <filters>
+			            <filter>
+			                <artifact>*:*</artifact>
+			                <excludes>
+			                    <exclude>META-INF/*.SF</exclude>
+			                    <exclude>META-INF/*.DSA</exclude>
+			                    <exclude>META-INF/*.RSA</exclude>
+			                </excludes>
+			            </filter>
+			        </filters>
+			    </configuration>
+			    <executions>
+			        <execution>
+			            <phase>package</phase>
+			            <goals>
+			                <goal>shade</goal>
+			            </goals>
+			            <configuration>
+			                <transformers>
+			                    <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+			                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+			                        <mainClass>edu.ucsb.aelmore.server.VoteServerJetty</mainClass>
+			                    </transformer>
+			                </transformers>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>    
+    -->
+    
+    </plugins>
+  </build>
   <dependencies>
     <dependency>
       <groupId>org.apache.commons</groupId>
