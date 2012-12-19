@@ -14,3 +14,11 @@ curl -v  -d "agent=frank&vote=frank" http://localhost:8080/vote
 curl -v http://localhost:8080/victory
 curl -v  -d "" http://localhost:8080/rst
 
+
+Packaging and Testing
+==============
+simple-voteserver uses maven for building and executing the tests.
+mvn package
+mvn test
+
+
