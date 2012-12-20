@@ -15,6 +15,8 @@ Client Assumptions/Behavior
  * Vote value and member cannot be empty string
  * Any extra parameters sent are ignored. 
 
+Run the embedded server with: [java -jar simple-voteserver-0.1-jar-with-dependencies.jar]
+
 Design Decisions
 ================
 The seperation of components, is a little bit extreme for the functionality required for the project, but trying to demonstrate good engineering principles such as composition, dependency injection for unit testing, project structure, etc.
@@ -30,7 +32,8 @@ Packaging and Testing
 simple-voteserver uses maven for building and executing the tests.
 To build: mvn package
 Execute unit tests: mvn test
-To run server: 
+
+To run server: java -jar simple-voteserver-0.1-jar-with-dependencies.jar 
 
 Sample curl requests
  * curl -v  -d "agent=isaac" http://localhost:8080/member
@@ -55,6 +58,11 @@ See: http://www.h2database.com/html/cheatSheet.html
 
 Note that a database file can only be opened by one process. So a server will block a stand alone server process, and vice versa.
 
+TODOs
+===========
+ * Configure Spring IoC
+ * Inject application properties through spring / prop file. Not many needed.
+ 
 
 
 
