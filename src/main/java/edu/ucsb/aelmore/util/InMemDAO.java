@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * Store models in containers. Coarsely thread safe.
  * Larger project would call for proper mock framework.
  */
-public class MockDAO implements IDAO {
+public class InMemDAO implements IDAO {
 	private static Logger log = LoggerFactory.getLogger(InMemDAO.class);
 	public List<String> members;
 	public Map<String,Boolean> memberVoted;
@@ -25,7 +25,7 @@ public class MockDAO implements IDAO {
 	/**
 	 * 
 	 */
-	public MockDAO() {
+	public InMemDAO() {
 		members = new ArrayList<String>();
 		memberVoted = new HashMap<String, Boolean>();
 		votes = new HashMap<String, Integer>();

@@ -1,111 +1,196 @@
-/**
- * 
- */
 package edu.ucsb.aelmore.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-/**
- * @author aelmore
- * Store models in containers. Coarsely thread safe.
- * Larger project would call for proper mock framework.
- */
 public class DAO implements IDAO {
 	private static Logger log = LoggerFactory.getLogger(DAO.class);
-	public List<String> members;
-	public Map<String,Boolean> memberVoted;
-	public Map<String, Integer> votes;
-	/**
-	 * 
-	 */
+	private static JdbcConnectionPool cp = null;
+	//To not create DB on connect use:
+	//private String dbURL = "jdbc:h2:voteServer";
+	private String dbURL = "jdbc:h2:voteServer;INIT=RUNSCRIPT FROM 'CreateDB.sql'"; //puts DB in current working directory
+	private String dbUser = "sa";
+	private String dbPassword = "sa";
+
+	public static final String INSERT_MEMBER = "insert into members values (?)";
+	public static final String CHECK_MEMBER = "select * from members where agent=?";
+	public static final String INSERT_VOTE = "insert into vote values (?,?)";
+	public static final String RESET_VOTE = "delete from vote";
+	public static final String RESET_MEMBERS = "delete from members";
+	public static final String GET_MAJORITY_VOTE = "select vote,count(*) from vote group by vote having count(*) > (select count(*) from members)/2";
+	
+	
 	public DAO() {
-		members = new ArrayList<String>();
-		memberVoted = new HashMap<String, Boolean>();
-		votes = new HashMap<String, Integer>();
+		synchronized(DAO.class){
+			if (cp==null)
+				cp = JdbcConnectionPool.create(dbURL,dbUser,dbPassword);
+			log.debug("Database and connection pool created");
+		}		
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.ucsb.aelmore.util.IDAO#addMember(java.lang.String)
-	 */
 	@Override
 	public boolean addMember(String member) {
-		synchronized (this) {
-			if (members.contains(member))
-				return false;
-	    members.add(member);
-	    memberVoted.put(member, false);
-	    return true;
+		Connection conn= null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn= cp.getConnection();
+		  ps = conn.prepareStatement(INSERT_MEMBER);
+		  ps.setString(1, member);
+		  int rows = ps.executeUpdate();
+	    if (rows == 1)
+	    	return true;
+	    else 
+	    	return false;
+    } catch (SQLException e) {
+      log.info("Excpetions executing query",e.getMessage());
     }
+		finally{
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close(); 
+				if (conn != null)
+					conn.close();
+      } catch (SQLException e) {
+	      log.error("Excpetions closing connection",e);
+      } 	
+		}
+		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.ucsb.aelmore.util.IDAO#memberExists(java.lang.String)
-	 */
 	@Override
 	public boolean memberExists(String member) {
-		synchronized (this) {
-			return members.contains(member);
+		Connection conn= null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn= cp.getConnection();
+		  ps = conn.prepareStatement(CHECK_MEMBER);
+		  ps.setString(1, member);
+		  rs = ps.executeQuery();
+		  if(rs.next())
+		  	return true;
+		  else
+		  	return false;
+    } catch (SQLException e) {
+      log.error("Excpetions executing query",e);
+    }
+		finally{
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close(); 
+				if (conn != null)
+					conn.close();
+      } catch (SQLException e) {
+	      log.error("Excpetions closing connection",e);
+      } 	
 		}
+		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.ucsb.aelmore.util.IDAO#vote(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public boolean vote(String member, String vote) {
-		synchronized (this) {
-			if (memberVoted.containsKey(member) && memberVoted.get(member)==false){
-				memberVoted.put(member, true);
-				int voteValue = (votes.containsKey(vote)) ? votes.get(vote)+1 : 1;	
-				votes.put(vote,voteValue);
-				return true;
-			}
-			return false;
+		Connection conn= null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn= cp.getConnection();
+		  ps = conn.prepareStatement(INSERT_VOTE);
+		  ps.setString(1, vote);		  
+		  ps.setString(2, member);
+		  int rows = ps.executeUpdate();
+		  if (rows == 1)
+		  	return true;
+	    
+    } catch (SQLException e) {
+      log.info("Excpetions executing query",e.getMessage());
+    }
+		finally{
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close(); 
+				if (conn != null)
+					conn.close();
+      } catch (SQLException e) {
+	      log.error("Excpetions closing connection",e);
+      } 	
 		}
+		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.ucsb.aelmore.util.IDAO#getMajorityVote()
-	 */
 	@Override
 	public String getMajorityVote() {
-		synchronized (this) {
-			//Could be done more efficiently. Simple for mock
-			String maxVal = null;
-			int maxCount = -1;
-			for (Map.Entry<String, Integer> vote: votes.entrySet()) {
-		    if(vote.getValue()>maxCount){
-		    	
-		    	maxCount = vote.getValue();
-		    	maxVal = vote.getKey();
-		    }
+		Connection conn= null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn= cp.getConnection();
+		  ps = conn.prepareStatement(GET_MAJORITY_VOTE);
+		  rs = ps.executeQuery();
+	    if(rs.next()){	    	
+	    	return rs.getString("vote");
 	    }
-			log.debug(String.format("Max Vote:%s count:%d  Memebers:%d  Votes Required:%s", maxVal,maxCount,members.size(),(float)members.size()/2.0));
-			if (maxCount > (float)members.size()/2.0)
-				return maxVal;
-			
-			return null;
+    } catch (SQLException e) {
+      log.error("Excpetions executing query",e);
+    }
+		finally{
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close(); 
+				if (conn != null)
+					conn.close();
+      } catch (SQLException e) {
+	      log.error("Excpetions closing connection",e);
+      } 	
 		}
+		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.ucsb.aelmore.util.IDAO#reset()
-	 */
 	@Override
 	public boolean reset() {
-		synchronized (this) {
-			members = new ArrayList<String>();
-			memberVoted = new HashMap<String, Boolean>();
-			votes = new HashMap<String, Integer>();
-			return true;
+		Connection conn= null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn= cp.getConnection();
+		  ps = conn.prepareStatement(RESET_VOTE);
+		  int rows = ps.executeUpdate();
+	    ps.close(); 
+	    ps = conn.prepareStatement(RESET_MEMBERS);
+	    int rows2 = ps.executeUpdate();
+	    return true;
+		  
+    } catch (SQLException e) {
+      log.error("Excpetions executing query",e);
+    }
+		finally{
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close(); 
+				if (conn != null)
+					conn.close();
+      } catch (SQLException e) {
+	      log.error("Excpetions closing connection",e);
+      } 	
 		}
+		return false;
 	}
 
 }

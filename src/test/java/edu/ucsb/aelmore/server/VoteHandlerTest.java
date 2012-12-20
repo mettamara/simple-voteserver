@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import edu.ucsb.aelmore.util.DAO;
+import edu.ucsb.aelmore.util.InMemDAO;
 import edu.ucsb.aelmore.util.MockDAO;
 import edu.ucsb.aelmore.util.NonUniqueVoteServerException;
 import edu.ucsb.aelmore.util.VoteServerException;
