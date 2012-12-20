@@ -8,20 +8,20 @@
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d [%t] %-5p %c - %m%n" />
     </layout>
-    <filter class="org.apache.log4j.varia.LevelRangeFilter">
-      <param name="LevelMin" value="DEBUG" />
-    </filter>
-  </appender>
 
+  </appender>
+  
+ 
+    <!-- 
     <appender name="logRollingAppend" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="iland.log"/>
+        <param name="File" value="simpleVoteServer.log"/>
         <layout class="org.apache.log4j.PatternLayout">
            <param name="ConversionPattern" value="%d [%t] %-5p %c - %m%n" />
         </layout>
-    <param name="MaxFileSize" value="1MB" />
-    <param name="MaxBackupIndex" value="2" />
+		    <param name="MaxFileSize" value="1MB" />
+		    <param name="MaxBackupIndex" value="2" />
     </appender>
-
+      -->
     <!-- Perf4J appenders -->
     <!--
        This AsyncCoalescingStatisticsAppender groups StopWatch log messages
@@ -63,8 +63,8 @@
 
   <!-- Root -->
   <root>
-    <level value="DEBUG" />
+    <level value="INFO" />
     <appender-ref ref="console" />
-    <appender-ref ref="logRollingAppend" />
+    <!-- <appender-ref ref="logRollingAppend" />-->
   </root>
 </log4j:configuration>

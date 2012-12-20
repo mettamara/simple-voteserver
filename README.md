@@ -19,7 +19,7 @@ Design Decisions
 ================
 The seperation of components, is a little bit extreme for the functionality required for the project, but trying to demonstrate good engineering principles such as composition, dependency injection for unit testing, project structure, etc.
 
-The choice of modules was simply due to familiarity and development speed. If this was a public service, I would likely use Coda Hale's dropwizard to generate the component wireframe for production quality assembly. 
+The choice of modules was simply due to familiarity and development speed. If this was a production service, Coda Hale's dropwizard would be a better candidate to generate the component wireframe. 
 
 For simplicity, add member and Vote both require that the input values are alphanumeric only. This could easily be extended to support escaped characters, such as spaces and stored the escaped values in the data layer.
 
@@ -38,9 +38,12 @@ Sample curl requests
  * curl -v http://localhost:8080/victory
  * curl -v  -d "" http://localhost:8080/rst
 
+A small multiprocess python load script tester.py is available.  A shell file runLoadAndGraph.sh will execute the load script and then aggregate perf4j stats that measure server request time by service target.  This script assumes a maven repository is accessible and that the perfStats.log is in the root directory. The runs may not be long enough produce viable graphs, but sliding 30 second window aggregations are shown. The graph generation script may need to be run seperately: java -jar [path to perf4j-0.9.16.jar] --graph perfGraphs.html [path to perfStats.log]
+
+
 Database
 ============
-simple-voteserver uses an embedded h2 database which is persisted in a file in the working directory. For ease of testing the datbase is re-constructed everytime the db connection pool is established.
+simple-voteserver uses an embedded h2 database which is persisted in a file in the working directory. For ease of testing the datbase is re-constructed everytime the db connection pool is established. MySQL or postgres would likely improve performance greatly.
 
 Can start DB in server mode via (replace jar classpath) : java -cp ~/.m2/repository/com/h2database/h2/1.3.170/h2-1.3.170.jar org.h2.tools.Server
 
@@ -49,6 +52,8 @@ jdbc:h2:tcp://localhost/voteServer
 with user name and password ="sa"
 
 See: http://www.h2database.com/html/cheatSheet.html
+
+Note that a database file can only be opened by one process. So a server will block a stand alone server process, and vice versa.
 
 
 

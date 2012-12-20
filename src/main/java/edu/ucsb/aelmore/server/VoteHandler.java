@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.mortbay.jetty.HttpConnection;
 import org.mortbay.jetty.Request;
 import org.mortbay.jetty.handler.AbstractHandler;
+import org.perf4j.StopWatch;
+import org.perf4j.log4j.Log4JStopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,16 +33,19 @@ public class VoteHandler extends AbstractHandler implements IVoteHandler, IVoteS
 	private static Logger log = LoggerFactory.getLogger(VoteHandler.class);
 	protected IDAO dao;
 	protected Pattern inputPattern;
-
+	StopWatch sw;
 	public VoteHandler() {
 		super();
 		inputPattern = Pattern.compile("\\W+");
+		 sw = new Log4JStopWatch();
 	}
 
 	@Override
 	public void handle(String target, HttpServletRequest request, HttpServletResponse response, int arg3)
 	    throws IOException, ServletException {
 
+		
+		sw.start(target);
 		if (request.getMethod().equals("POST")) {
 			log.debug("Post Request");
 			if (target.equalsIgnoreCase(MEMBER_SCV)) {
@@ -53,6 +58,7 @@ public class VoteHandler extends AbstractHandler implements IVoteHandler, IVoteS
 				} else {
 					// Add member
 					try{
+						
 						addMember(request.getParameter(AGENT_PARM));
 						response.getWriter().write("-");
 						response.setStatus(HttpServletResponse.SC_OK);
@@ -130,7 +136,7 @@ public class VoteHandler extends AbstractHandler implements IVoteHandler, IVoteS
 			Request base_request =(Request)request;
 			base_request.setHandled(true);
 		}
-		
+		sw.stop(target);
 	}
 
 	protected boolean testInput(String s) {
