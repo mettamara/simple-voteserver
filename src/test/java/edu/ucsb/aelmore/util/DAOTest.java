@@ -10,16 +10,16 @@ import static org.junit.Assert.assertFalse;
 public class DAOTest {
 
 	public DAOTest() {
-		
+
 	}
-	
+
 	@Test
-	public void TestDAOSetup() throws Exception{
-		IDAO dao = new DAO();		
+	public void TestDAOSetup() throws Exception {
+		IDAO dao = new DAO();
 	}
-	
+
 	@Test
-	public void TestMemberDAO() throws Exception{
+	public void TestMemberDAO() throws Exception {
 		IDAO dao = new DAO();
 		dao.reset();
 		assertFalse(dao.memberExists("Isaac"));
@@ -27,20 +27,20 @@ public class DAOTest {
 		assertFalse(dao.addMember("Isaac"));
 		assertTrue(dao.addMember("Frank"));
 	}
-	
+
 	@Test
-	public void TestVoteDAO() throws Exception{
+	public void TestVoteDAO() throws Exception {
 		IDAO dao = new DAO();
 		dao.reset();
 		assertTrue(dao.addMember("Isaac"));
 		assertTrue(dao.addMember("Frank"));
 		assertTrue(dao.vote("Isaac", "Frank"));
 		assertFalse(dao.vote("Isaac", "Frank"));
-		assertTrue(dao.vote("Frank", "Frank"));		
+		assertTrue(dao.vote("Frank", "Frank"));
 	}
 
 	@Test
-	public void TestResetDAO() throws Exception{
+	public void TestResetDAO() throws Exception {
 		IDAO dao = new DAO();
 		dao.reset();
 		assertTrue(dao.addMember("Isaac"));
@@ -50,34 +50,34 @@ public class DAOTest {
 		assertTrue(dao.addMember("Isaac"));
 		assertTrue(dao.memberExists("Isaac"));
 	}
-	
+
 	@Test
-	public void TestMajorityDAO() throws Exception{
+	public void TestMajorityDAO() throws Exception {
 		IDAO dao = new DAO();
 		dao.reset();
 		assertTrue(dao.addMember("Isaac"));
 		assertTrue(dao.addMember("Frank"));
-		assertEquals(null,dao.getMajorityVote());
+		assertEquals(null, dao.getMajorityVote());
 		assertTrue(dao.vote("Isaac", "Frank"));
-		assertEquals(null,dao.getMajorityVote());
+		assertEquals(null, dao.getMajorityVote());
 		assertFalse(dao.vote("Isaac", "Frank"));
-		assertEquals(null,dao.getMajorityVote());
-		assertTrue(dao.vote("Frank", "Frank"));	
-		assertEquals("Frank",dao.getMajorityVote());
+		assertEquals(null, dao.getMajorityVote());
+		assertTrue(dao.vote("Frank", "Frank"));
+		assertEquals("Frank", dao.getMajorityVote());
 		assertTrue(dao.addMember("Philip"));
-		assertEquals("Frank",dao.getMajorityVote());
+		assertEquals("Frank", dao.getMajorityVote());
 		assertTrue(dao.addMember("Dan"));
-		assertEquals(null,dao.getMajorityVote());
-	
+		assertEquals(null, dao.getMajorityVote());
+
 		dao.reset();
 		assertTrue(dao.addMember("Isaac"));
 		assertTrue(dao.addMember("Frank"));
-		assertEquals(null,dao.getMajorityVote());
+		assertEquals(null, dao.getMajorityVote());
 		assertTrue(dao.vote("Isaac", "Frank"));
-		assertEquals(null,dao.getMajorityVote());
-		assertTrue(dao.vote("Frank", "Isaac"));	
-		assertEquals(null,dao.getMajorityVote());
-		
+		assertEquals(null, dao.getMajorityVote());
+		assertTrue(dao.vote("Frank", "Isaac"));
+		assertEquals(null, dao.getMajorityVote());
+
 	}
-	
+
 }

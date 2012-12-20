@@ -11,17 +11,16 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * @author aelmore
- * Store models in containers. Coarsely thread safe.
- * Larger project would call for proper mock framework.
+ * @author aelmore Store models in containers. Coarsely thread safe. Larger
+ *         project would call for proper mock framework.
  */
 public class MockDAO implements IDAO {
-	private static Logger log = LoggerFactory.getLogger(InMemDAO.class);
+	private static Logger log = LoggerFactory.getLogger(MockDAO.class);
 	public List<String> members;
-	public Map<String,Boolean> memberVoted;
+	public Map<String, Boolean> memberVoted;
 	public Map<String, Integer> votes;
+
 	/**
 	 * 
 	 */
@@ -31,7 +30,9 @@ public class MockDAO implements IDAO {
 		votes = new HashMap<String, Integer>();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.ucsb.aelmore.util.IDAO#addMember(java.lang.String)
 	 */
 	@Override
@@ -39,13 +40,15 @@ public class MockDAO implements IDAO {
 		synchronized (this) {
 			if (members.contains(member))
 				return false;
-	    members.add(member);
-	    memberVoted.put(member, false);
-	    return true;
-    }
+			members.add(member);
+			memberVoted.put(member, false);
+			return true;
+		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.ucsb.aelmore.util.IDAO#memberExists(java.lang.String)
 	 */
 	@Override
@@ -55,47 +58,54 @@ public class MockDAO implements IDAO {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.ucsb.aelmore.util.IDAO#vote(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public boolean vote(String member, String vote) {
 		synchronized (this) {
-			if (memberVoted.containsKey(member) && memberVoted.get(member)==false){
+			if (memberVoted.containsKey(member) && memberVoted.get(member) == false) {
 				memberVoted.put(member, true);
-				int voteValue = (votes.containsKey(vote)) ? votes.get(vote)+1 : 1;	
-				votes.put(vote,voteValue);
+				int voteValue = (votes.containsKey(vote)) ? votes.get(vote) + 1 : 1;
+				votes.put(vote, voteValue);
 				return true;
 			}
 			return false;
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.ucsb.aelmore.util.IDAO#getMajorityVote()
 	 */
 	@Override
 	public String getMajorityVote() {
 		synchronized (this) {
-			//Could be done more efficiently. Simple for mock
+			// Could be done more efficiently. Simple for mock
 			String maxVal = null;
 			int maxCount = -1;
-			for (Map.Entry<String, Integer> vote: votes.entrySet()) {
-		    if(vote.getValue()>maxCount){
-		    	
-		    	maxCount = vote.getValue();
-		    	maxVal = vote.getKey();
-		    }
-	    }
-			log.debug(String.format("Max Vote:%s count:%d  Memebers:%d  Votes Required:%s", maxVal,maxCount,members.size(),(float)members.size()/2.0));
-			if (maxCount > (float)members.size()/2.0)
+			for (Map.Entry<String, Integer> vote : votes.entrySet()) {
+				if (vote.getValue() > maxCount) {
+
+					maxCount = vote.getValue();
+					maxVal = vote.getKey();
+				}
+			}
+			log.debug(String.format("Max Vote:%s count:%d  Memebers:%d  Votes Required:%s", maxVal, maxCount, members.size(),
+			    (float) members.size() / 2.0));
+			if (maxCount > (float) members.size() / 2.0)
 				return maxVal;
-			
+
 			return null;
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.ucsb.aelmore.util.IDAO#reset()
 	 */
 	@Override

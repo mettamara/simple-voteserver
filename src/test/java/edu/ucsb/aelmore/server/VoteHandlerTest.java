@@ -148,8 +148,8 @@ public class VoteHandlerTest {
 	@Test
 	public void testVote() throws Exception {
 		handler.reset();
-		
-		//Add member
+
+		// Add member
 		response = new MockHttpServletResponse();
 
 		request.setMethod("POST");
@@ -158,8 +158,8 @@ public class VoteHandlerTest {
 		handler.handle(IVoteHandler.MEMBER_SCV, request, response, 0);
 		assertEquals("Valid Request", HttpServletResponse.SC_OK, response.getStatus());
 		assertEquals("Expected - ", "-", response.getContentAsString());
-		
-		//Vote 
+
+		// Vote
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 		request.setMethod("POST");
@@ -169,8 +169,8 @@ public class VoteHandlerTest {
 		handler.handle(IVoteHandler.VOTE_SCV, request, response, 0);
 		assertEquals("Valid Request", HttpServletResponse.SC_OK, response.getStatus());
 		assertEquals("Expected - ", "-", response.getContentAsString());
-		
-		//Check Victor
+
+		// Check Victor
 		response = new MockHttpServletResponse();
 		request.setRequestURI("/" + IVoteHandler.VICTORY_SCV);
 		request.setMethod("GET");
@@ -178,7 +178,7 @@ public class VoteHandlerTest {
 		assertEquals("Valid Request", HttpServletResponse.SC_OK, response.getStatus());
 		assertEquals("Expected Bruce ", "Bruce", response.getContentAsString());
 
-		//bad vote
+		// bad vote
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 		request.setMethod("POST");
@@ -187,9 +187,8 @@ public class VoteHandlerTest {
 		request.addParameter(IVoteHandler.VOTE_PARM, "Bruce");
 		handler.handle(IVoteHandler.VOTE_SCV, request, response, 0);
 		assertEquals("Valid Request", HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
-		
-		
-		//Add member
+
+		// Add member
 		response = new MockHttpServletResponse();
 		request.setMethod("POST");
 		request.setRequestURI("/" + IVoteHandler.MEMBER_SCV);
@@ -198,15 +197,14 @@ public class VoteHandlerTest {
 		assertEquals("Valid Request", HttpServletResponse.SC_OK, response.getStatus());
 		assertEquals("Expected - ", "-", response.getContentAsString());
 
-		//Dulpicate Add member
+		// Dulpicate Add member
 		response = new MockHttpServletResponse();
 		request.setRequestURI("/" + IVoteHandler.MEMBER_SCV);
 		request.addParameter(IVoteHandler.AGENT_PARM, "Isaac");
 		handler.handle(IVoteHandler.MEMBER_SCV, request, response, 0);
 		assertEquals("Valid Request", HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
-		
 
-		//vote
+		// vote
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 		request.setMethod("POST");
@@ -216,27 +214,27 @@ public class VoteHandlerTest {
 		handler.handle(IVoteHandler.VOTE_SCV, request, response, 0);
 		assertEquals("Valid Request", HttpServletResponse.SC_OK, response.getStatus());
 		assertEquals("Expected - ", "-", response.getContentAsString());
-		
-		//Check Victor
+
+		// Check Victor
 		response = new MockHttpServletResponse();
 		request.setRequestURI("/" + IVoteHandler.VICTORY_SCV);
 		request.setMethod("GET");
 		handler.handle(IVoteHandler.VICTORY_SCV, request, response, 0);
 		assertEquals("Valid Request", HttpServletResponse.SC_OK, response.getStatus());
 		assertEquals("Expected UNKNOWN ", IVoteService.NO_MAJORITY, response.getContentAsString());
-		
-		//Add member
+
+		// Add member
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 		request.setMethod("POST");
 		request.setRequestURI("/" + IVoteHandler.MEMBER_SCV);
 		request.addParameter(IVoteHandler.AGENT_PARM, "Frank");
 		handler.handle(IVoteHandler.MEMBER_SCV, request, response, 0);
-		//log.debug(response.getContentAsString());
+		// log.debug(response.getContentAsString());
 		assertEquals("Valid Request", HttpServletResponse.SC_OK, response.getStatus());
 		assertEquals("Expected - ", "-", response.getContentAsString());
-		
-		//vote
+
+		// vote
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 		request.setMethod("POST");
@@ -246,8 +244,8 @@ public class VoteHandlerTest {
 		handler.handle(IVoteHandler.VOTE_SCV, request, response, 0);
 		assertEquals("Valid Request", HttpServletResponse.SC_OK, response.getStatus());
 		assertEquals("Expected - ", "-", response.getContentAsString());
-		
-		//duplicate vote
+
+		// duplicate vote
 		response = new MockHttpServletResponse();
 		request = new MockHttpServletRequest();
 		request.setMethod("POST");
@@ -256,8 +254,8 @@ public class VoteHandlerTest {
 		request.addParameter(IVoteHandler.VOTE_PARM, "Philip");
 		handler.handle(IVoteHandler.VOTE_SCV, request, response, 0);
 		assertEquals("Valid Request", HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
-		
-		//Check Victor
+
+		// Check Victor
 		response = new MockHttpServletResponse();
 		request.setRequestURI("/" + IVoteHandler.VICTORY_SCV);
 		request.setMethod("GET");
