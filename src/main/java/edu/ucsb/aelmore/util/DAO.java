@@ -51,7 +51,7 @@ public class DAO implements IDAO {
 			else
 				return false;
 		} catch (SQLException e) {
-			log.info("Excpetions executing query", e.getMessage());
+			log.info("Exceptions executing addMember: " + e.getMessage());
 		} finally {
 			try {
 				if (rs != null)
@@ -61,7 +61,7 @@ public class DAO implements IDAO {
 				if (conn != null)
 					conn.close();
 			} catch (SQLException e) {
-				log.error("Excpetions closing connection", e);
+				log.error("Exceptions closing connection", e);
 			}
 		}
 		return false;
@@ -82,7 +82,7 @@ public class DAO implements IDAO {
 			else
 				return false;
 		} catch (SQLException e) {
-			log.error("Excpetions executing query", e);
+			log.error("Exceptions executing checking member : " + e.getMessage());
 		} finally {
 			try {
 				if (rs != null)
@@ -92,7 +92,7 @@ public class DAO implements IDAO {
 				if (conn != null)
 					conn.close();
 			} catch (SQLException e) {
-				log.error("Excpetions closing connection", e);
+				log.error("Exceptions closing connection", e);
 			}
 		}
 		return false;
@@ -113,7 +113,7 @@ public class DAO implements IDAO {
 				return true;
 
 		} catch (SQLException e) {
-			log.info("Excpetions executing query", e.getMessage());
+			log.info("Exceptions executing inserting vote : " + e.getMessage());
 		} finally {
 			try {
 				if (rs != null)
@@ -123,7 +123,7 @@ public class DAO implements IDAO {
 				if (conn != null)
 					conn.close();
 			} catch (SQLException e) {
-				log.error("Excpetions closing connection", e);
+				log.error("Exceptions closing connection", e);
 			}
 		}
 		return false;
@@ -142,7 +142,7 @@ public class DAO implements IDAO {
 				return rs.getString("vote");
 			}
 		} catch (SQLException e) {
-			log.error("Excpetions executing query", e);
+			log.error("Exceptions executing getMajority : " + e.getMessage());
 		} finally {
 			try {
 				if (rs != null)
@@ -152,7 +152,7 @@ public class DAO implements IDAO {
 				if (conn != null)
 					conn.close();
 			} catch (SQLException e) {
-				log.error("Excpetions closing connection", e);
+				log.error("Exceptions closing connection", e);
 			}
 		}
 		return null;
@@ -173,7 +173,7 @@ public class DAO implements IDAO {
 			return true;
 
 		} catch (SQLException e) {
-			log.error("Excpetions executing query", e);
+			log.error("Exceptions executing reset updates: " + e.getMessage());
 		} finally {
 			try {
 				if (rs != null)
@@ -183,7 +183,7 @@ public class DAO implements IDAO {
 				if (conn != null)
 					conn.close();
 			} catch (SQLException e) {
-				log.error("Excpetions closing connection", e);
+				log.error("Exceptions closing connection", e);
 			}
 		}
 		return false;
