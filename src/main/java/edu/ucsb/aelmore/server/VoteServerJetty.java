@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.ucsb.aelmore.util.DAO;
-import edu.ucsb.aelmore.util.InMemDAO;
 
 
 /**
@@ -20,7 +19,7 @@ import edu.ucsb.aelmore.util.InMemDAO;
  */
 public class VoteServerJetty implements IVoteServer{
 	private static Logger log = LoggerFactory.getLogger(VoteServerJetty.class);
-
+	private int port=8080;
 	/**
 	 * @param args
 	 */
@@ -36,7 +35,7 @@ public class VoteServerJetty implements IVoteServer{
 	   Server server = new Server();
 
      Connector connector = new SelectChannelConnector();
-     connector.setPort(8080);
+     connector.setPort(port);
      //connector.setHost("127.0.0.1");
      server.addConnector(connector);
      //TODO spring wire
@@ -58,5 +57,9 @@ public class VoteServerJetty implements IVoteServer{
 			System.exit(-1);
 		}
   }
+
+	public void setPort(int port) {
+		this.port = port;
+	}
 
 }
