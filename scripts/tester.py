@@ -6,7 +6,7 @@ from multiprocessing import Process, Queue
 
 
 NUM_PROCS = 10
-NUM_REQUESTS = 10000
+NUM_REQUESTS = 2000
 VOTE_VALUES = 12
 SERVER = 'http://localhost:8080/'
 ADD_URI = '%s%s' %(SERVER,'member')
@@ -57,6 +57,7 @@ def issue_requests(vote_values, options, q):
     
 if __name__ == "__main__":
   print "Reseting:" , reset()
+  print "%s procs each executing %s requests" % (NUM_PROCS,NUM_REQUESTS)
   vote_values = []
   for i in range(VOTE_VALUES):
     vote_values.append(randString())

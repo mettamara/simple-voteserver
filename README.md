@@ -41,7 +41,9 @@ Sample curl requests
  * curl -v http://localhost:8080/victory
  * curl -v  -d "" http://localhost:8080/rst
 
-A small multiprocess python load script tester.py is available.  A shell file runLoadAndGraph.sh will execute the load script and then aggregate perf4j stats that measure server request time by service target.  This script assumes a maven repository is accessible and that the perfStats.log is in the root directory. The runs may not be long enough produce viable graphs, but sliding 30 second window aggregations are shown. The graph generation script may need to be run seperately: java -jar [path to perf4j-0.9.16.jar] --graph perfGraphs.html [path to perfStats.log]
+A small multiprocess python load script tester.py is available. This script requires that the python library requests is install (python-requests on debian).
+
+A shell file runLoadAndGraph.sh will execute the load script and then aggregate perf4j stats that measure server request time by service target.  This script assumes a maven repository is accessible and that the perfStats.log is in the root directory. The runs may not be long enough produce viable graphs, but sliding 30 second window aggregations are shown. The graph generation script may need to be run seperately: java -jar [path to perf4j-0.9.16.jar] --graph perfGraphs.html [path to perfStats.log]
 
 
 Database
