@@ -70,7 +70,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>edu.ucsb.aelmore.server.VoteServerJetty</mainClass>\
+              <mainClass>edu.ucsb.aelmore.Start</mainClass>\
             </manifest>
           </archive>
           <descriptorRefs>
@@ -148,6 +148,11 @@
       <artifactId>spring-core</artifactId>
       <version>${spring.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
+    </dependency>    
     <dependency>
 		  <groupId>org.springframework</groupId>
 		  <artifactId>spring-test</artifactId>

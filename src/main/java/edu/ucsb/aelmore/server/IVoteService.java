@@ -17,6 +17,9 @@ public interface IVoteService {
 	public static final String MEMBER_NOT_EXISTS="Member does not exist.";
 	public static final String MEMBER_VOTED="Member has alread voted.";
 	public static final String NO_MAJORITY="UNKNOWN";
+	
+
+	
 	/**
 	 * Add a new voting member to the system. 
 	 * Only alphanumeric characters accepted.

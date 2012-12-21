@@ -1,0 +1,18 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+ 
+  <bean id="voteHandler" class="edu.ucsb.aelmore.server.VoteHandler"  scope="prototype">
+      <property name="DAO" ref="dao" />
+  </bean>
+  
+  <bean id="dao" class="edu.ucsb.aelmore.util.DAO"  scope="prototype">
+  </bean>
+ 
+  <bean id="voteServer" class="edu.ucsb.aelmore.server.VoteServerJetty" >
+    <property name="voteHandler" ref="voteHandler" />
+    <property name="port" value="8080" />
+  </bean> 
+ 
+</beans>
